@@ -97,7 +97,7 @@ class SimulationReport:
         print(f"Total Simulation Time: {total_time:.2f} seconds")
         print(f"Number of Tasks Executed: {self.completed_tasks}")
         print(f"Average Task Completion Time: {avg_task_time:.2f} seconds")
-        
+
 #  Function to load tasks from a file and enqueue them
 def load_tasks(filename, pool):
     try:
@@ -111,3 +111,11 @@ def load_tasks(filename, pool):
                     print(f"Invalid task data: {line.strip()}")
     except FileNotFoundError:
         print(f"File not found: {filename}")
+
+# Function to generate a task file with random tasks
+def generate_task_file(filename, num_tasks):
+    with open(filename, "w") as file:
+        for task_id in range(1, num_tasks + 1):
+            arrival = random.randint(0, 10)  # Random arrival time (0-10 seconds)
+            burst = random.randint(1, 5)  # Random burst time (1-5 seconds)
+            file.write(f"{task_id} {arrival} {burst}\n")
