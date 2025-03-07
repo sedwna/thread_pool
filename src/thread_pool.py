@@ -97,3 +97,17 @@ class SimulationReport:
         print(f"Total Simulation Time: {total_time:.2f} seconds")
         print(f"Number of Tasks Executed: {self.completed_tasks}")
         print(f"Average Task Completion Time: {avg_task_time:.2f} seconds")
+        
+#  Function to load tasks from a file and enqueue them
+def load_tasks(filename, pool):
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                try:
+                    task_id, arrival, burst = map(int, line.split())
+                    time.sleep(arrival)  # Simulate task arrival time
+                    pool.enqueue_task(Task(task_id, arrival, burst))
+                except ValueError:
+                    print(f"Invalid task data: {line.strip()}")
+    except FileNotFoundError:
+        print(f"File not found: {filename}")
