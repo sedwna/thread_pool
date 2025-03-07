@@ -31,3 +31,48 @@ class PriorityTaskQueue:
 
     def qsize(self):
         return len(self.queue)
+    
+# Thread pool class with dynamic resizing
+class ThreadPool:
+    def __init__(self, min_threads, max_threads):
+        self.min_threads = min_threads
+        self.max_threads = max_threads
+        self.task_queue = PriorityTaskQueue()  # Use priority queue for task prioritization
+        self.threads = []
+        self.stop_signal = False
+        self.lock = threading.Lock()
+        self.report = SimulationReport()
+
+        # Create initial worker threads
+        for _ in range(min_threads):
+            self.add_thread()
+
+    def add_thread(self):
+        with self.lock:
+            if len(self.threads) < self.max_threads:
+                thread = threading.Thread(target=self.worker)
+                thread.start()
+                self.threads.append(thread)
+
+    def worker(self):
+        while not self.stop_signal:
+            try:
+                task = self.task_queue.get()
+                print(f"Executing Task {task.task_id} (Arrival: {task.arrival_time}, Burst: {task.burst_time})")
+                time.sleep(task.burst_time)  # Simulate task execution
+                print(f"Task {task.task_id} Completed (Arrival: {task.arrival_time}, Burst: {task.burst_time})")
+                self.report.log_task_completion(task.burst_time)
+                self.task_queue.task_done()
+            except IndexError:  # No tasks in the queue
+                time.sleep(1)  # Sleep briefly to avoid busy-waiting
+
+    def enqueue_task(self, task):
+        if self.task_queue.qsize() > len(self.threads) and len(self.threads) < self.max_threads:
+            self.add_thread()  # Add a new thread if the queue is overloaded
+        self.task_queue.put(task)
+
+    def shutdown(self):
+        self.stop_signal = True
+        for thread in self.threads:
+            thread.join()
+        self.report.generate_report()
