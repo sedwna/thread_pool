@@ -120,14 +120,14 @@ def generate_task_file(filename, num_tasks):
             burst = random.randint(1, 5)  # Random burst time (1-5 seconds)
             file.write(f"{task_id} {arrival} {burst}\n")
 
-# Main function to run the simulation
+
 def main():
     filename = "tasks.txt"
-    generate_task_file(filename, 10)  # Generate a file with 10 random tasks
-    pool = ThreadPool(min_threads=2, max_threads=5)  # Thread pool with 2-5 threads
-    load_tasks(filename, pool)  # Load tasks from the file
-    time.sleep(20)  # Let tasks execute (adjust as needed)
-    pool.shutdown()  # Shutdown the thread pool and generate the report
+    generate_task_file(filename, 10) 
+    pool = ThreadPool(min_threads=2, max_threads=5) 
+    load_tasks(filename, pool)  
+    time.sleep(20)  
+    pool.shutdown()  
 
 if __name__ == "__main__":
     main()
