@@ -76,3 +76,24 @@ class ThreadPool:
         for thread in self.threads:
             thread.join()
         self.report.generate_report()
+
+# Simulation report class to track metrics
+class SimulationReport:
+    def __init__(self):
+        self.start_time = time.time()
+        self.completed_tasks = 0
+        self.total_burst_time = 0
+
+    def log_task_completion(self, burst_time):
+        self.completed_tasks += 1
+        self.total_burst_time += burst_time
+
+    def generate_report(self):
+        end_time = time.time()
+        total_time = end_time - self.start_time
+        avg_task_time = self.total_burst_time / self.completed_tasks if self.completed_tasks > 0 else 0
+
+        print("\nSimulation Report:")
+        print(f"Total Simulation Time: {total_time:.2f} seconds")
+        print(f"Number of Tasks Executed: {self.completed_tasks}")
+        print(f"Average Task Completion Time: {avg_task_time:.2f} seconds")
