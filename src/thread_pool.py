@@ -13,3 +13,21 @@ class Task:
     def __lt__(self, other):
         # Priority comparison for the priority queue (lower burst time has higher priority)
         return self.burst_time < other.burst_time
+# Priority task queue to prioritize tasks based on burst time
+class PriorityTaskQueue:
+    def __init__(self):
+        self.queue = []
+        self.counter = 0  # To handle tasks with the same priority
+
+    def put(self, task):
+        heapq.heappush(self.queue, (task.burst_time, self.counter, task))
+        self.counter += 1
+
+    def get(self):
+        return heapq.heappop(self.queue)[-1]
+
+    def task_done(self):
+        pass  # No-op for simplicity
+
+    def qsize(self):
+        return len(self.queue)
